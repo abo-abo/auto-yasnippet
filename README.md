@@ -1,7 +1,8 @@
 # Main idea
-  This is a hybrid of 'kmacro and 'yasnippet.
+  This is a hybrid of [keyboard macro](http://www.gnu.org/software/emacs/manual/html_node/emacs/Basic-Keyboard-Macro.html)
+  and [yasnippet](http://code.google.com/p/yasnippet/).
   You create the snippet on the go, usually to be used just in the one place.
-  But it's fast, because you're not leaving the current buffer, and
+  It's fast, because you're not leaving the current buffer, and
   all you do is enter the code you'd enter anyway, just placing "~" where you'd
   like yasnippet fields and mirrors to be.
 ## Functions
@@ -11,12 +12,14 @@
 ### expand-auto-yasnippet
     * expands whatever is currently in `*current-auto-yasnippet-template*'
 # Setup
-## Download yasnippet http://code.google.com/p/yasnippet/ and set it up.
-## Put `auto-yasnippet.el' into your elisp folder.
-## In your .emacs file:
-   (require 'auto-yasnippet)       
+1. Download yasnippet http://code.google.com/p/yasnippet/ and set it up.
+2. Put `auto-yasnippet.el' into your elisp folder.
+3. In your .emacs file:
+```emacs-lisp
+   (require 'auto-yasnippet)
    (global-set-key (kbd "H-w") 'create-auto-yasnippet)
    (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
+```
 # Usage examples
 ## JavaScript
 ```JavaScript
