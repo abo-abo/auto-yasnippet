@@ -15,9 +15,11 @@
 1. Download yasnippet http://code.google.com/p/yasnippet/ and set it up.
 2. Put `auto-yasnippet.el' into your elisp folder.
 3. In your .emacs file:
-       (require 'auto-yasnippet)
-       (global-set-key (kbd "H-w") 'create-auto-yasnippet)
-       (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
+
+    (require 'auto-yasnippet)
+    (global-set-key (kbd "H-w") 'create-auto-yasnippet)
+    (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
+    
 # Usage examples
 ## JavaScript
 ```JavaScript
