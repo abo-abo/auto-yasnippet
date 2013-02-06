@@ -20,6 +20,7 @@
    (global-set-key (kbd "H-w") 'create-auto-yasnippet)
    (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
 ```
+
 # Usage examples
 ## JavaScript
 ```JavaScript

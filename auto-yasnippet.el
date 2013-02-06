@@ -77,7 +77,7 @@
 ;;   }
 ;; }
 (defvar *current-auto-yasnippet-template* ""
-  "Used as snippet body, when 'expand-auto-yasnippet is called")
+  "Used as snippet body, when `expand-auto-yasnippet' is called")
 (defvar *auto-yasnippet-marker* "~"
   "Used to mark fields and mirrors.
 Another good option is \\$, if you don't care about LaTeX")
