@@ -6,11 +6,11 @@
   all you do is enter the code you'd enter anyway, just placing "~" where you'd
   like yasnippet fields and mirrors to be.
 ## Functions
-### create-auto-yasnippet
+### aya-create
     * removes "~" from current line or region(if mark is active), yielding valid code
-    * the created snippet is recorded into `*current-auto-yasnippet-template*'
-### expand-auto-yasnippet
-    * expands whatever is currently in `*current-auto-yasnippet-template*'
+    * the created snippet is recorded into `aya-current'
+### aya-expand
+    * expands whatever is currently in `aya-current'
 # Setup
 1. Download yasnippet http://code.google.com/p/yasnippet/ and set it up.
 2. Put `auto-yasnippet.el' into your elisp folder.
@@ -18,17 +18,18 @@
 
 ```Lisp
      (require 'auto-yasnippet)
-     (global-set-key (kbd "H-w") 'create-auto-yasnippet)
-     (global-set-key (kbd "H-y") 'expand-auto-yasnippet)
+     (global-set-key (kbd "H-w") 'aya-create)
+     (global-set-key (kbd "H-y") 'aya-expand)
 ```
     
 # Usage examples
 ## JavaScript
 ```JavaScript
      field~1 = document.getElementById("field~1");
-     // Since this just one line, just call `create-auto-yasnippet' (from anywhere on this line).
+     // Since this just one line,
+     // just call `aya-create' (from anywhere on this line).
      // The ~ chars disappear, yielding valid code.
-     // `*current-auto-yasnippet-template*' becomes:
+     // `aya-current' becomes:
      // "field$1 = document.getElementById(\"field$1\");"
      // Now by calling `expand-auto-snippet' multiple times, you get:
 
@@ -47,9 +48,9 @@
        }
      }
      // This differs from the code that you wanted to write only by 4 ~ chars.
-     // Since it's more than one line, select the region and call `create-auto-yasnippet'.
+     // Since it's more than one line, select the region and call `aya-create'.
      // Again, the ~ chars disappear, yielding valid code.
-     // `*current-auto-yasnippet-template* becomes:
+     // `aya-current becomes:
      // "class Light$1 implements Runnable {
      //   public Light$1() {}
      //   public void run() {
