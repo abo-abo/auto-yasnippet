@@ -50,7 +50,7 @@
      // This differs from the code that you wanted to write only by 4 ~ chars.
      // Since it's more than one line, select the region and call `aya-create'.
      // Again, the ~ chars disappear, yielding valid code.
-     // `aya-current becomes:
+     // `aya-current' becomes:
      // "class Light$1 implements Runnable {
      //   public Light$1() {}
      //   public void run() {
