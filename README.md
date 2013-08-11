@@ -21,7 +21,7 @@
      (global-set-key (kbd "H-w") 'aya-create)
      (global-set-key (kbd "H-y") 'aya-expand)
 ```
-    
+
 # Usage examples
 ## JavaScript
 ```JavaScript
@@ -58,9 +58,9 @@
      //     light = $3;
      //   }
      // }"
-       
+
      // Now by calling `expand-auto-snippet', you can quickly fill in:
-     
+
      class LightOff implements Runnable {
        public LightOff() {}
        public void run() {
@@ -69,6 +69,18 @@
        }
      }
 ```
-   
-  
-  
+## C++
+```C++
+    const Point<3> curl(grad[~2][~1] - grad[~1][~2],
+```
+
+Select the region between the paren and the comma and call `aya-create'.
+You can easily obtain the final code:
+```C++
+    const Point<3> curl(grad[2][1] - grad[1][2],
+                        grad[0][2] - grad[2][0],
+                        grad[1][0] - grad[0][1]);
+
+    Note how annoying it would be to triple check that the indices match.
+    Now you just have to check for one line.
+```
