@@ -3,6 +3,7 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/auto-yasnippet
 ;; Version: 0.2
+;; Package-Requires: ((yasnippet "0.8.0"))
 
 ;; This file is not part of GNU Emacs
 
@@ -25,7 +26,9 @@
 
 ;; Setup:
 ;;
-;; 1. Download yasnippet http://code.google.com/p/yasnippet/ and set it up.
+;; 1. Download yasnippet from https://github.com/capitaomorte/yasnippet
+;;    and set it up.
+;;
 ;; 2. Put this file into your elisp folder.
 ;;
 ;; 3. In your .emacs file:
@@ -94,16 +97,19 @@
 ;;
 ;; Note how annoying it would be to triple check that the indices match.
 ;; Now you just have to check for one line.
+
+
+(require 'yasnippet)
 
 (defvar aya-current ""
-  "Used as snippet body, when 'aya-expand is called")
+  "Used as snippet body, when `aya-expand' is called")
 
 (defvar aya-marker "~"
   "Used to mark fields and mirrors.
 Another good option is \\$, if you don't care about LaTeX")
 
 (defvar aya-marker-one-line "$"
-  "Used to mark one mirror for simplistic snippets")
+  "Used to mark one mirror for `aya-create-one-line`")
 
 (defvar aya-field-regex "\\([A-Za-z0-9-]+\\)"
   "Defines how the filed looks like.
@@ -111,7 +117,8 @@ With the default [A-Za-z0-9-], Foo_bar will expand to $1_bar.
 But if you set [A-Za-z0-9-_], Foo_bar will expand to $1.")
 
 ;; you can chain `aya-create' with a function of your choosing,
-;; e.g. copy current line/region if there's no snippet.
+;; e.g. copy current line/region if there's no snippet
+;; when `aya-create' is called.
 (defvar aya-default-function nil
   "function to call if no snippet markers were on line / in region.")
 (make-variable-buffer-local 'aya-default-function)
@@ -134,7 +141,7 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
              "$1"
              (buffer-substring-no-properties (point) end)))
       (delete-region beg end)
-      (yas/expand-snippet line))))
+      (yas-expand-snippet line))))
 
 (defun aya-create ()
   "Works on either the current line, or, if `mark-active', the current region.
@@ -181,16 +188,16 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 (defun aya-expand ()
   "Inserts the last yasnippet created by `aya-create'"
   (interactive)
-  (yas/expand-snippet aya-current))
+  (yas-expand-snippet aya-current))
 
-(defvar *yas-invokation-buffer*
-  "The buffer where `yas/expand' was called")
+(defvar aya-invokation-buffer
+  "The buffer where `yas-expand' was called")
 
-(defvar *yas-invokation-point*
-  "The point in buffer where `yas/expand' was called")
+(defvar aya-invokation-point
+  "The point in buffer where `yas-expand' was called")
 
-(defvar *yas-tab*
-  "The distance from line beginning where `yas/expand' was called")
+(defvar aya-tab-position
+  "The distance from line beginning where `yas-expand' was called")
 
 (set-default 'yas/fallback-behavior 'return-nil)
 
@@ -198,14 +205,15 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
   (interactive)
   (cond ((expand-abbrev))
 
-        ((yas/snippets-at-point)
-         (yas/next-field-or-maybe-expand-1))
+        ((yas--snippets-at-point)
+         (yas-next-field-or-maybe-expand))
 
         ((progn
-           (setq *yas-invokation-point* (point))
-           (setq *yas-invokation-buffer* (current-buffer))
-           (setq *yas-tab* (- (point) (line-beginning-position)))
-           (yas/expand)))))
+           (setq aya-invokation-point (point))
+           (setq aya-invokation-buffer (current-buffer))
+           (setq aya-tab-position (- (point) (line-beginning-position)))
+           (yas-expand)))))
 
 (provide 'auto-yasnippet)
+
 ;;; auto-yasnippet.el ends here
