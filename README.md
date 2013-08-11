@@ -80,7 +80,7 @@ You can easily obtain the final code:
     const Point<3> curl(grad[2][1] - grad[1][2],
                         grad[0][2] - grad[2][0],
                         grad[1][0] - grad[0][1]);
-
-    Note how annoying it would be to triple check that the indices match.
-    Now you just have to check for one line.
 ```
+Note how annoying it would be to triple check that the indices match.
+Now you just have to check for one line.
+
