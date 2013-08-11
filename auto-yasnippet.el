@@ -190,18 +190,21 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
   (interactive)
   (yas-expand-snippet aya-current))
 
-(defvar aya-invokation-buffer
+(defvar aya-invokation-buffer nil
   "The buffer where `yas-expand' was called")
 
-(defvar aya-invokation-point
+(defvar aya-invokation-point nil
   "The point in buffer where `yas-expand' was called")
 
-(defvar aya-tab-position
+(defvar aya-tab-position nil
   "The distance from line beginning where `yas-expand' was called")
 
 (set-default 'yas/fallback-behavior 'return-nil)
 
 (defun aya-open-line ()
+  "Call `open-line', unless there are abbrevs or snippets at point.
+In that case expand them. If there's a snippet expansion in progress,
+move to the next field."
   (interactive)
   (cond ((expand-abbrev))
 
