@@ -32,7 +32,7 @@
 ;; 2. Put this file into your elisp folder.
 ;;
 ;; 3. In your .emacs file:
-;;     (require 'yasnippet)
+;;     (require 'auto-yasnippet)
 ;;     (global-set-key (kbd "H-w") 'aya-create)
 ;;     (global-set-key (kbd "H-y") 'aya-expand)
 
@@ -109,7 +109,7 @@
 Another good option is \\$, if you don't care about LaTeX")
 
 (defvar aya-marker-one-line "$"
-  "Used to mark one mirror for `aya-create-one-line`")
+  "Used to mark one mirror for `aya-create-one-line'")
 
 (defvar aya-field-regex "\\([A-Za-z0-9-]+\\)"
   "Defines how the filed looks like.
@@ -193,9 +193,36 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 (defvar aya-invokation-buffer nil
   "The buffer where `yas-expand' was called")
 
+;; here's a use-case for this one:
+;; 
+;; # -*- mode: snippet -*-
+;; # name: println
+;; # condition: (> aya-invokation-point 10)
+;; # key: p
+;; # --
+;; System.out.println($0);
+;;
+;; # -*- mode: snippet -*-
+;; # name: package
+;; # condition: (< aya-invokation-point 10)
+;; # key: p
+;; # --
+;; `(insert (concat "package " (java-package-name (buffer-file-name)) ";\n"))`
+;;
+;; Both snippets share the same key "p" based on the `aya-invokation-point'.
 (defvar aya-invokation-point nil
   "The point in buffer where `yas-expand' was called")
 
+;; here's a use-case of this one:
+;; 
+;; # -*- mode: snippet -*-
+;; # name: short comment
+;; # key: sc
+;; # --
+;; //———$1${1:$(make-string (- 47 aya-tab-position (length text)) ?—)}$0
+;;
+;; This snippet will produce comment separators of consistent length
+;; no matter from which indent position it was called from
 (defvar aya-tab-position nil
   "The distance from line beginning where `yas-expand' was called")
 
