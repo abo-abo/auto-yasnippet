@@ -141,6 +141,7 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
              "$1"
              (buffer-substring-no-properties (point) end)))
       (delete-region beg end)
+      (setq aya-current line)
       (yas-expand-snippet line))))
 
 (defun aya-create ()
