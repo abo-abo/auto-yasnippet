@@ -227,8 +227,6 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 (defvar aya-tab-position nil
   "The distance from line beginning where `yas-expand' was called")
 
-(set-default 'yas/fallback-behavior 'return-nil)
-
 (defun aya-open-line ()
   "Call `open-line', unless there are abbrevs or snippets at point.
 In that case expand them. If there's a snippet expansion in progress,
