@@ -12,7 +12,7 @@
 ### aya-expand
     * expands whatever is currently in `aya-current'
 # Setup
-1. Download yasnippet http://code.google.com/p/yasnippet/ and set it up.
+1. Download yasnippet from https://github.com/capitaomorte/yasnippet and set it up.
 2. Put `auto-yasnippet.el' into your elisp folder.
 3. In your .emacs file:
 
@@ -84,3 +84,17 @@ You can easily obtain the final code:
 Note how annoying it would be to triple check that the indices match.
 Now you just have to check for one line.
 
+## JavaScript - `aya-one-line`:
+```JavaScript
+     // `aya-one-line' works as a combination of `aya-create' and `aya-expand'
+     // for one-line snippets. It's invoked by `aya-create' in case
+     // there's no `aya-marker' (default ~) on the line, but there's
+     // `aya-marker-one-line' (default $). Or you can invoke it on its own.
+     field$ = document.getElementById("");
+     // call `aya-create' and the rest is as before:
+
+     field1 = document.getElementById("field1");
+     field2 = document.getElementById("field2");
+     field3 = document.getElementById("field3");
+     fieldFinal = document.getElementById("fieldFinal");
+```
