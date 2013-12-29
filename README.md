@@ -7,10 +7,15 @@
   like yasnippet fields and mirrors to be.
 ## Functions
 ### aya-create
-    * removes "~" from current line or region(if mark is active), yielding valid code
-    * the created snippet is recorded into `aya-current'
+Removes "~" from current line or region (if mark is active)
+yielding valid code.
+The created snippet is recorded into `aya-current'.
 ### aya-expand
-    * expands whatever is currently in `aya-current'
+Expands whatever is currently in `aya-current'
+### aya-open-line
+Generic expansion function. It will either expand or move
+to the next field depending on the context.
+
 # Setup
 1. Download yasnippet from https://github.com/capitaomorte/yasnippet and set it up.
 2. Put `auto-yasnippet.el' into your elisp folder.
@@ -31,7 +36,7 @@
      // The ~ chars disappear, yielding valid code.
      // `aya-current' becomes:
      // "field$1 = document.getElementById(\"field$1\");"
-     // Now by calling `expand-auto-snippet' multiple times, you get:
+     // Now by calling `aya-expand' multiple times, you get:
 
      field1 = document.getElementById("field1");
      field2 = document.getElementById("field2");
@@ -59,7 +64,7 @@
      //   }
      // }"
 
-     // Now by calling `expand-auto-snippet', you can quickly fill in:
+     // Now by calling `aya-expand', you can quickly fill in:
 
      class LightOff implements Runnable {
        public LightOff() {}
