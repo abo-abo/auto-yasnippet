@@ -195,7 +195,7 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
   "The buffer where `yas-expand' was called.")
 
 ;; here's a use-case for this one:
-;; 
+;;
 ;; # -*- mode: snippet -*-
 ;; # name: println
 ;; # condition: (> aya-invokation-point 10)
@@ -215,7 +215,7 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
   "The point in buffer where `yas-expand' was called.")
 
 ;; here's a use-case of this one:
-;; 
+;;
 ;; # -*- mode: snippet -*-
 ;; # name: short comment
 ;; # key: sc
@@ -230,18 +230,21 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 (defun aya-open-line ()
   "Call `open-line', unless there are abbrevs or snippets at point.
 In that case expand them.  If there's a snippet expansion in progress,
-move to the next field."
+move to the next field. Call `open-line' if nothing else applies."
   (interactive)
   (cond ((expand-abbrev))
 
         ((yas--snippets-at-point)
          (yas-next-field-or-maybe-expand))
 
-        ((progn
+        ((ignore-errors
            (setq aya-invokation-point (point))
            (setq aya-invokation-buffer (current-buffer))
            (setq aya-tab-position (- (point) (line-beginning-position)))
-           (yas-expand)))))
+           (yas-expand)
+           t))
+
+        (t (open-line 1))))
 
 (provide 'auto-yasnippet)
 
