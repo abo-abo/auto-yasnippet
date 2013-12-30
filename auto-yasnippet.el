@@ -97,19 +97,19 @@
 ;;
 ;; Note how annoying it would be to triple check that the indices match.
 ;; Now you just have to check for one line.
-
 
+;;; Code:
 (require 'yasnippet)
 
 (defvar aya-current ""
-  "Used as snippet body, when `aya-expand' is called")
+  "Used as snippet body, when `aya-expand' is called.")
 
 (defvar aya-marker "~"
   "Used to mark fields and mirrors.
 Another good option is \\$, if you don't care about LaTeX")
 
 (defvar aya-marker-one-line "$"
-  "Used to mark one mirror for `aya-create-one-line'")
+  "Used to mark one mirror for `aya-create-one-line'.")
 
 (defvar aya-field-regex "\\([A-Za-z0-9-]+\\)"
   "Defines how the filed looks like.
@@ -120,12 +120,12 @@ But if you set [A-Za-z0-9-_], Foo_bar will expand to $1.")
 ;; e.g. copy current line/region if there's no snippet
 ;; when `aya-create' is called.
 (defvar aya-default-function nil
-  "function to call if no snippet markers were on line / in region.")
+  "Function to call if no snippet markers were on line / in region.")
 (make-variable-buffer-local 'aya-default-function)
 
 (defun aya-create-one-line ()
-  "This is a simplistic `aya-create' that creates only one mirror
- (you can still have as many instances of this mirror as you want).
+  "A simplistic `aya-create' to create only one mirror.
+You can still have as many instances of this mirror as you want.
 It's less flexible than `aya-create', but faster.
 It uses a different marker, which is `aya-marker-one-line'.
 You can use it to quickly generate one-liners such as
@@ -187,12 +187,12 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
           (and (functionp aya-default-function) (funcall aya-default-function)))))))
 
 (defun aya-expand ()
-  "Inserts the last yasnippet created by `aya-create'"
+  "Insert the last yasnippet created by `aya-create'."
   (interactive)
   (yas-expand-snippet aya-current))
 
 (defvar aya-invokation-buffer nil
-  "The buffer where `yas-expand' was called")
+  "The buffer where `yas-expand' was called.")
 
 ;; here's a use-case for this one:
 ;; 
@@ -212,7 +212,7 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 ;;
 ;; Both snippets share the same key "p" based on the `aya-invokation-point'.
 (defvar aya-invokation-point nil
-  "The point in buffer where `yas-expand' was called")
+  "The point in buffer where `yas-expand' was called.")
 
 ;; here's a use-case of this one:
 ;; 
@@ -225,11 +225,11 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 ;; This snippet will produce comment separators of consistent length
 ;; no matter from which indent position it was called from
 (defvar aya-tab-position nil
-  "The distance from line beginning where `yas-expand' was called")
+  "The distance from line beginning where `yas-expand' was called.")
 
 (defun aya-open-line ()
   "Call `open-line', unless there are abbrevs or snippets at point.
-In that case expand them. If there's a snippet expansion in progress,
+In that case expand them.  If there's a snippet expansion in progress,
 move to the next field."
   (interactive)
   (cond ((expand-abbrev))
