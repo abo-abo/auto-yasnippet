@@ -103,3 +103,17 @@ Now you just have to check for one line.
      field3 = document.getElementById("field3");
      fieldFinal = document.getElementById("fieldFinal");
 ```
+
+## Generating comments
+
+Here's a yasnippet that makes use of `aya-tab-position`. You need to call
+`aya-open-line` if you want to use it.
+
+    # -*- mode: snippet -*-
+    # name: short comment
+    # key: sc
+    # --
+    //———$1${1:$(make-string (- 47 aya-tab-position (length yas-text)) ?—)}$0
+
+Comments generated with this will always end in same column position,
+no matter from which indentation level they were invoked from.
