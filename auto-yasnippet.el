@@ -246,6 +246,16 @@ move to the next field. Call `open-line' if nothing else applies."
 
         (t (open-line 1))))
 
+(defun aya-yank-snippet ()
+  "Insert current snippet at point.
+To save a snippet permanently, create an empty file and call this."
+  (interactive)
+  (unless (= 0 (buffer-size))
+    (error "Must be called from an empty file"))
+  (insert "# -*- mode: snippet -*-\n")
+  (insert "# name: \n# key: \n# --\n")
+  (insert aya-current))
+
 (provide 'auto-yasnippet)
 
 ;;; auto-yasnippet.el ends here
