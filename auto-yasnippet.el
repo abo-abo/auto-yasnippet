@@ -123,6 +123,7 @@ But if you set [A-Za-z0-9-_], Foo_bar will expand to $1.")
   "Function to call if no snippet markers were on line / in region.")
 (make-variable-buffer-local 'aya-default-function)
 
+;;;###autoload
 (defun aya-create-one-line ()
   "A simplistic `aya-create' to create only one mirror.
 You can still have as many instances of this mirror as you want.
@@ -144,6 +145,7 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
       (setq aya-current line)
       (yas-expand-snippet line))))
 
+;;;###autoload
 (defun aya-create ()
   "Works on either the current line, or, if `mark-active', the current region.
 Removes `aya-marker' prefixes,
