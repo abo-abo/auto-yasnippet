@@ -16,15 +16,29 @@ Expands whatever is currently in `aya-current'
 Generic expansion function. It will either expand or move
 to the next field depending on the context.
 
-# Setup
-1. Download yasnippet from https://github.com/capitaomorte/yasnippet and set it up.
-2. Put `auto-yasnippet.el' into your elisp folder.
-3. In your .emacs file:
+# Installation instructions
+It's easiest/recommended to install from [MELPA](http://melpa.org/).
+Here's a minimal MELPA configuration for your `~/.emacs`:
 
-```Lisp
-     (require 'auto-yasnippet)
-     (global-set-key (kbd "H-w") 'aya-create)
-     (global-set-key (kbd "H-y") 'aya-expand)
+```cl
+(package-initialize)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+```
+
+Afterwards, <kbd>M-x package-install RET auto-yasnippet RET</kbd> (you might
+want to <kbd>M-x package-refresh-contents RET</kbd> beforehand if
+you haven't done so recently).
+
+You will also want to setup the key bindings. Here's what I recommend:
+
+```cl
+(global-set-key (kbd "H-w") 'aya-create)
+(global-set-key (kbd "H-y") 'aya-expand)
+```
+I also like to bind this, instead of using <kbd>TAB</kbd> to expand yasnippets:
+
+```cl
+(global-set-key (kbd "C-o") 'aya-open-line)
 ```
 
 # Usage examples
