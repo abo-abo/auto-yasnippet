@@ -159,26 +159,27 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
            (tail (if mark-active (region-end) (line-end-position)))
            (s (buffer-substring-no-properties head tail)))
       (cl-labels ((parse (in vars out)
-                         (if in
-                             (let ((p (string-match (concat
-                                                     aya-marker
-                                                     aya-field-regex) in)))
-                               (if p
-                                   (let* ((var (match-string 1 in))
-                                          (mult (assoc var vars))
-                                          (vars (if mult vars
-                                                  (cons (cons var (+ 1 (cdar vars)))
-                                                        vars))))
-                                     (parse (substring in (+ p (length var) 1))
-                                            vars
-                                            (concat out
-                                                    (substring in 0 p)
-                                                    "$"
-                                                    (number-to-string (if mult
-                                                                          (cdr mult)
-                                                                        (cdar vars))))))
-                                 (concat out in)))
-                           out)))
+                    (if in
+                        (let ((p (string-match (concat
+                                                aya-marker
+                                                aya-field-regex)
+                                               in)))
+                          (if p
+                              (let* ((var (match-string 1 in))
+                                     (mult (assoc var vars))
+                                     (vars (if mult vars
+                                             (cons (cons var (+ 1 (cdar vars)))
+                                                   vars))))
+                                (parse (substring in (+ p (length var) 1))
+                                       vars
+                                       (concat out
+                                               (substring in 0 p)
+                                               "$"
+                                               (number-to-string (if mult
+                                                                     (cdr mult)
+                                                                   (cdar vars))))))
+                            (concat out in)))
+                      out)))
         (setq aya-current
               (replace-regexp-in-string "\\\\" "\\\\\\\\" (parse s (list (cons "" 0)) "")))
         (if (string-match "\\$" aya-current)
@@ -229,6 +230,7 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 (defvar aya-tab-position nil
   "The distance from line beginning where `yas-expand' was called.")
 
+;;;###autoload
 (defun aya-open-line ()
   "Call `open-line', unless there are abbrevs or snippets at point.
 In that case expand them.  If there's a snippet expansion in progress,
@@ -243,11 +245,12 @@ move to the next field. Call `open-line' if nothing else applies."
            (setq aya-invokation-point (point))
            (setq aya-invokation-buffer (current-buffer))
            (setq aya-tab-position (- (point) (line-beginning-position)))
-           (yas-expand)
-           t))
+           (yas-expand)))
 
-        (t (open-line 1))))
+        (t
+         (open-line 1))))
 
+;;;###autoload
 (defun aya-yank-snippet ()
   "Insert current snippet at point.
 To save a snippet permanently, create an empty file and call this."
