@@ -192,7 +192,16 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 (defun aya-expand ()
   "Insert the last yasnippet created by `aya-create'."
   (interactive)
-  (yas-expand-snippet aya-current))
+  (if (region-active-p)
+      (let ((str (buffer-substring-no-properties
+                  (region-beginning)
+                  (region-end))))
+        (yas-expand-snippet (replace-regexp-in-string
+                             "\\$1"
+                             "$0"
+                             aya-current))
+        (insert str))
+    (yas-expand-snippet aya-current)))
 
 (defvar aya-invokation-buffer nil
   "The buffer where `yas-expand' was called.")
