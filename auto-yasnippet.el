@@ -279,6 +279,34 @@ To save a snippet permanently, create an empty file and call this."
   (insert "# name: \n# key: \n# --\n")
   (insert aya-current))
 
+(defun aya-insert-snippet-function-extra (name)
+  "Insert the snippet body based on NAME."
+  (let ((key (read-string "Snippet key: ")))
+    (insert
+     "# -*- mode: snippet -*-"
+     "\n# contributor: " user-full-name
+     "\n# name: " name
+     "\n# key: " key
+     "\n# --\n"
+     aya-current)
+    t))
+
+(defun aya-insert-snippet-function-default (name)
+  "Insert the snippet body based on NAME."
+  (insert
+   "# -*- mode: snippet -*-"
+   "\n# contributor: " user-full-name
+   "\n# name: " name
+   "\n# key: "
+   "\n# --\n"
+   aya-current)
+  nil)
+
+(defvar aya-insert-snippet-function
+  #'aya-insert-snippet-function-default
+  "The function for inserting a snippet body.
+When it returns non-nil, save and close the buffer after inserting.")
+
 (defun aya-persist-snippet (name)
   "Persist the current snippet in file NAME.
 
@@ -288,7 +316,9 @@ Make sure to configure yasnippet to scan `aya-persist-snippets-dir'
 for snippets.
 
 Use `yas/reload-all' after defining a batch of snippets,
-or `yas-load-snippet-buffer' for the current one."
+or `yas-load-snippet-buffer' for the current one.
+
+Customizing `aya-insert-snippet-function' affects the behavior."
   (interactive
    (if (eq aya-current "")
        (user-error "Aborting: You don't have a current auto-snippet defined")
@@ -302,17 +332,15 @@ or `yas-load-snippet-buffer' for the current one."
         (user-error
          "A snippet called \"%s\" already exists in \"%s\""
          name default-directory)
-      (find-file name)
-      (snippet-mode)
-      (insert
-       "# -*- mode: snippet -*-"
-       "\n# contributor: " user-full-name
-       "\n# name: " name
-       "\n# key: "
-       "\n# --\n"
-       aya-current)
-      (goto-char (point-min))
-      (search-forward "key: "))))
+      (with-current-buffer (find-file-noselect name)
+        (if (funcall aya-insert-snippet-function name)
+            (progn
+              (save-buffer)
+              (kill-buffer))
+          (snippet-mode)
+          (goto-char (point-min))
+          (search-forward "key: ")
+          (pop-to-buffer (current-buffer)))))))
 
 (provide 'auto-yasnippet)
 
