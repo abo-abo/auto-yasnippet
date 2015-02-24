@@ -101,6 +101,15 @@
 ;;; Code:
 (require 'yasnippet)
 
+(defgroup auto-yasnippet nil
+  "Auto YASnippet."
+  :group 'yasnippet)
+
+(defcustom aya-persist-snippets-dir
+  "~/.emacs.d/snippets"
+  "Directory to save auto yasnippets."
+  :type 'directory)
+
 (defvar aya-current ""
   "Used as snippet body, when `aya-expand' is called.")
 
@@ -243,7 +252,7 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 (defun aya-open-line ()
   "Call `open-line', unless there are abbrevs or snippets at point.
 In that case expand them.  If there's a snippet expansion in progress,
-move to the next field. Call `open-line' if nothing else applies."
+move to the next field.  Call `open-line' if nothing else applies."
   (interactive)
   (cond ((expand-abbrev))
 
@@ -269,6 +278,41 @@ To save a snippet permanently, create an empty file and call this."
   (insert "# -*- mode: snippet -*-\n")
   (insert "# name: \n# key: \n# --\n")
   (insert aya-current))
+
+(defun aya-persist-snippet (name)
+  "Persist the current snippet in file NAME.
+
+The full path is `aya-persist-snippets-dir'/`major-mode'/NAME.
+
+Make sure to configure yasnippet to scan `aya-persist-snippets-dir'
+for snippets.
+
+Use `yas/reload-all' after defining a batch of snippets,
+or `yas-load-snippet-buffer' for the current one."
+  (interactive
+   (if (eq aya-current "")
+       (user-error "Aborting: You don't have a current auto-snippet defined")
+     (list
+      (read-string "Snippet name: "))))
+  (let ((default-directory
+         (format "%s/%S" aya-persist-snippets-dir major-mode)))
+    (unless (file-exists-p default-directory)
+      (make-directory default-directory t))
+    (if (file-exists-p name)
+        (user-error
+         "A snippet called \"%s\" already exists in \"%s\""
+         name default-directory)
+      (find-file name)
+      (snippet-mode)
+      (insert
+       "# -*- mode: snippet -*-"
+       "\n# contributor: " user-full-name
+       "\n# name: " name
+       "\n# key: "
+       "\n# --\n"
+       aya-current)
+      (goto-char (point-min))
+      (search-forward "key: "))))
 
 (provide 'auto-yasnippet)
 
