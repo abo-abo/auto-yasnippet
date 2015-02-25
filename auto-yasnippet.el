@@ -108,7 +108,8 @@
 (defcustom aya-persist-snippets-dir
   "~/.emacs.d/snippets"
   "Directory to save auto yasnippets."
-  :type 'directory)
+  :type 'directory
+  :group 'auto-yasnippet)
 
 (defvar aya-current ""
   "Used as snippet body, when `aya-expand' is called.")
@@ -279,46 +280,62 @@ To save a snippet permanently, create an empty file and call this."
   (insert "# name: \n# key: \n# --\n")
   (insert aya-current))
 
-(defun aya-insert-snippet-function-extra (name)
-  "Insert the snippet body based on NAME."
-  (let ((key (read-string "Snippet key: ")))
-    (insert
-     "# -*- mode: snippet -*-"
-     "\n# contributor: " user-full-name
-     "\n# name: " name
-     "\n# key: " key
-     "\n# --\n"
-     aya-current)
-    t))
+;;;###autoload
+(defun aya-write-yasnippet (name key &optional group)
+  "Write a new yansippet file from the current snippet as NAME, with KEY.
 
-(defun aya-insert-snippet-function-default (name)
-  "Insert the snippet body based on NAME."
-  (insert
-   "# -*- mode: snippet -*-"
-   "\n# contributor: " user-full-name
-   "\n# name: " name
-   "\n# key: "
-   "\n# --\n"
-   aya-current)
-  nil)
+Precede the command with `C-u' to prompt for GROUP.
 
-(defvar aya-insert-snippet-function
-  #'aya-insert-snippet-function-default
-  "The function for inserting a snippet body.
-When it returns non-nil, save and close the buffer after inserting.")
+The file is written directly to a file without further interaction.
 
-(defun aya-persist-snippet (name)
-  "Persist the current snippet in file NAME.
+The full path will be `aya-persist-snippets-dir'/`major-mode'/NAME.
 
-The full path is `aya-persist-snippets-dir'/`major-mode'/NAME.
+Configure yasnippet to scan `aya-persist-snippets-dir' for snippets.
+
+Use `yas/reload-all' to activate new snippets."
+  (interactive
+   (if (eq aya-current "")
+       (user-error "Aborting: You don't have a current auto-snippet defined")
+     (list
+      (read-string "Snippet name: ")
+      (read-string "Snippet key: ")
+      (if (eq current-prefix-arg '(4))
+          (read-string "Snippet group: ")
+        nil))))
+  (let ((group-string "")
+        (default-directory
+          (format "%s/%s" aya-persist-snippets-dir major-mode)))
+    (unless (eq group nil)
+      (setq group-string (format "\n # group: %s" group)))
+    (unless (file-exists-p default-directory)
+      (make-directory default-directory t))
+    (if (file-exists-p name)
+        (user-error "A snippet called %S already exists in %S" name default-directory)
+      (append-to-file
+       (concat
+        "# -*- mode: snippet -*-"
+        "\n# contributor: " user-full-name
+        "\n# name: " name
+        "\n# key: " key
+        group-string
+        "\n# --\n"
+        aya-current) nil
+        name))))
+
+;;;###autoload
+(defun aya-build-yasnippet (name)
+  "Create a new snippet file with NAME and switch to its buffer.
+
+The full path will be `aya-persist-snippets-dir'/`major-mode'/NAME.
+
+When generated it will be switch to the new buffer for saving and/or editing.
 
 Make sure to configure yasnippet to scan `aya-persist-snippets-dir'
 for snippets.
 
 Use `yas/reload-all' after defining a batch of snippets,
-or `yas-load-snippet-buffer' for the current one.
+or `yas-load-snippet-buffer' for the current one."
 
-Customizing `aya-insert-snippet-function' affects the behavior."
   (interactive
    (if (eq aya-current "")
        (user-error "Aborting: You don't have a current auto-snippet defined")
@@ -329,18 +346,19 @@ Customizing `aya-insert-snippet-function' affects the behavior."
     (unless (file-exists-p default-directory)
       (make-directory default-directory t))
     (if (file-exists-p name)
-        (user-error
-         "A snippet called \"%s\" already exists in \"%s\""
-         name default-directory)
+        (user-error "A snippet called %S already exists in %S" name default-directory)
       (with-current-buffer (find-file-noselect name)
-        (if (funcall aya-insert-snippet-function name)
-            (progn
-              (save-buffer)
-              (kill-buffer))
+          (insert
+           "# -*- mode: snippet -*-"
+           "\n# contributor: " user-full-name
+           "\n# name: " name
+           "\n# key: "
+           "\n# --\n"
+           aya-current)
           (snippet-mode)
           (goto-char (point-min))
           (search-forward "key: ")
-          (pop-to-buffer (current-buffer)))))))
+          (pop-to-buffer (current-buffer))))))
 
 (provide 'auto-yasnippet)
 
