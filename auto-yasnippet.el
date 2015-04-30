@@ -2,7 +2,7 @@
 
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/auto-yasnippet
-;; Version: 0.2
+;; Version: 0.3
 ;; Package-Requires: ((yasnippet "0.8.0"))
 
 ;; This file is not part of GNU Emacs
@@ -154,6 +154,30 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
       (setq aya-current line)
       (yas-expand-snippet line))))
 
+(defun aya-create-symbol ()
+  "A simplistic `aya-create' that only mirrors a symbol verbatim.
+The symbol should be bounded by `'. The very first match is used.
+Works either on current line or region."
+  (let* ((beg (if (region-active-p)
+                  (region-beginning)
+                (line-beginning-position)))
+         (end (if (region-active-p)
+                  (region-end)
+                (line-end-position)))
+         (str (buffer-substring-no-properties beg end))
+         (case-fold-search nil))
+    (deactivate-mark)
+    (when (string-match "`[^']+'" str)
+      (let ((sym (substring (match-string 0 str) 1 -1)))
+        (setq str (replace-match sym nil nil str))
+        (setq aya-current
+              (replace-regexp-in-string
+               (regexp-quote sym)
+               "$1" str))
+        (delete-region beg end)
+        (insert str)
+        t))))
+
 ;;;###autoload
 (defun aya-create ()
   "Works on either the current line, or, if `mark-active', the current region.
@@ -161,42 +185,44 @@ Removes `aya-marker' prefixes,
 writes the corresponding snippet to `aya-current',
 with words prefixed by `aya-marker' as fields, and mirrors properly set up."
   (interactive)
-  (unless (aya-create-one-line)
-    (let* ((head (if mark-active
-                     (region-beginning)
-                   (save-excursion (back-to-indentation) (point))))
-           (tail (if mark-active (region-end) (line-end-position)))
-           (s (buffer-substring-no-properties head tail)))
-      (cl-labels ((parse (in vars out)
-                    (if in
-                        (let ((p (string-match (concat
-                                                aya-marker
-                                                aya-field-regex)
-                                               in)))
-                          (if p
-                              (let* ((var (match-string 1 in))
-                                     (mult (assoc var vars))
-                                     (vars (if mult vars
-                                             (cons (cons var (+ 1 (cdar vars)))
-                                                   vars))))
-                                (parse (substring in (+ p (length var) 1))
-                                       vars
-                                       (concat out
-                                               (substring in 0 p)
-                                               "$"
-                                               (number-to-string (if mult
-                                                                     (cdr mult)
-                                                                   (cdar vars))))))
-                            (concat out in)))
-                      out)))
-        (setq aya-current
-              (replace-regexp-in-string "\\\\" "\\\\\\\\" (parse s (list (cons "" 0)) "")))
-        (if (string-match "\\$" aya-current)
-            (progn
-              (delete-region head tail)
-              (insert (replace-regexp-in-string aya-marker "" s)))
-          ;; try some other useful action if it's defined for current buffer
-          (and (functionp aya-default-function) (funcall aya-default-function)))))))
+  (cond ((aya-create-one-line))
+        ((aya-create-symbol))
+        (t
+         (let* ((head (if mark-active
+                          (region-beginning)
+                        (save-excursion (back-to-indentation) (point))))
+                (tail (if mark-active (region-end) (line-end-position)))
+                (s (buffer-substring-no-properties head tail)))
+           (cl-labels ((parse (in vars out)
+                         (if in
+                             (let ((p (string-match (concat
+                                                     aya-marker
+                                                     aya-field-regex)
+                                                    in)))
+                               (if p
+                                   (let* ((var (match-string 1 in))
+                                          (mult (assoc var vars))
+                                          (vars (if mult vars
+                                                  (cons (cons var (+ 1 (cdar vars)))
+                                                        vars))))
+                                     (parse (substring in (+ p (length var) 1))
+                                            vars
+                                            (concat out
+                                                    (substring in 0 p)
+                                                    "$"
+                                                    (number-to-string (if mult
+                                                                          (cdr mult)
+                                                                        (cdar vars))))))
+                                 (concat out in)))
+                           out)))
+             (setq aya-current
+                   (replace-regexp-in-string "\\\\" "\\\\\\\\" (parse s (list (cons "" 0)) "")))
+             (if (string-match "\\$" aya-current)
+                 (progn
+                   (delete-region head tail)
+                   (insert (replace-regexp-in-string aya-marker "" s)))
+               ;; try some other useful action if it's defined for current buffer
+               (and (functionp aya-default-function) (funcall aya-default-function))))))))
 
 (defun aya-expand ()
   "Insert the last yasnippet created by `aya-create'."
