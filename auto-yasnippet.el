@@ -120,7 +120,7 @@ Another good option is \\$, if you don't care about LaTeX")
 (defvar aya-marker-one-line "$"
   "Used to mark one mirror for `aya-create-one-line'.")
 
-(defvar aya-field-regex "\\([A-Za-z0-9-]+\\)"
+(defvar aya-field-regex "\\([A-Za-z0-9-_]+\\)"
   "Defines how the filed looks like.
 With the default [A-Za-z0-9-], Foo_bar will expand to $1_bar.
 But if you set [A-Za-z0-9-_], Foo_bar will expand to $1.")
