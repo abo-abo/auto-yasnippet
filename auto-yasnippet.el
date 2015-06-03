@@ -166,7 +166,6 @@ Works either on current line or region."
                 (line-end-position)))
          (str (buffer-substring-no-properties beg end))
          (case-fold-search nil))
-    (deactivate-mark)
     (when (string-match "`[^']+'" str)
       (let ((sym (substring (match-string 0 str) 1 -1)))
         (setq str (replace-match sym nil nil str))
