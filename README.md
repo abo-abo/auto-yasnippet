@@ -14,11 +14,11 @@ yasnippet fields and mirrors to be.
 
 Removes "~" from current line or region (if mark is active)
 yielding valid code.
-The created snippet is recorded into `aya-current'.
+The created snippet is recorded into `aya-current`.
 
 ### aya-expand
 
-Expands whatever is currently in `aya-current'
+Expands whatever is currently in `aya-current`
 
 ### aya-open-line
 
@@ -126,7 +126,7 @@ Again, the `~` chars disappear, yielding valid code.
 }"
 ```
 
-Now by calling `aya-expand', you can quickly fill in:
+Now by calling `aya-expand`, you can quickly fill in:
 
 ```java
 class LightOff implements Runnable {
@@ -144,7 +144,7 @@ class LightOff implements Runnable {
 const Point<3> curl(grad[~2][~1] - grad[~1][~2],
 ```
 
-Select the region between the paren and the comma and call `aya-create'.
+Select the region between the paren and the comma and call `aya-create`.
 You can easily obtain the final code:
 
 ```c++
