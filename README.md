@@ -61,14 +61,14 @@ you haven't done so recently).
 You will also want to setup the key bindings. Here's what I recommend:
 
 ```cl
-(global-set-key (kbd "H-w") 'aya-create)
-(global-set-key (kbd "H-y") 'aya-expand)
+(global-set-key (kbd "H-w") #'aya-create)
+(global-set-key (kbd "H-y") #'aya-expand)
 ```
 
 I also like to bind this, instead of using <kbd>TAB</kbd> to expand yasnippets:
 
 ```cl
-(global-set-key (kbd "C-o") 'aya-open-line)
+(global-set-key (kbd "C-o") #'aya-open-line)
 ```
 
 # Usage examples

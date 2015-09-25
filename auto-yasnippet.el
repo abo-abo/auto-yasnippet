@@ -33,8 +33,8 @@
 ;;
 ;; 3. In your .emacs file:
 ;;     (require 'auto-yasnippet)
-;;     (global-set-key (kbd "H-w") 'aya-create)
-;;     (global-set-key (kbd "H-y") 'aya-expand)
+;;     (global-set-key (kbd "H-w") #'aya-create)
+;;     (global-set-key (kbd "H-y") #'aya-expand)
 
 ;; Usage:
 ;; e.g. in JavaScript write:
