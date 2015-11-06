@@ -141,7 +141,7 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
         (setq line
               (concat
                (replace-regexp-in-string re "$1" line)
-               "$1"
+               (if (= (point) end) "" "$1")
                (buffer-substring-no-properties (point) end)))
         (delete-region beg end)
         (setq aya-current line)
