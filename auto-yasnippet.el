@@ -133,11 +133,12 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
   (interactive)
   (let* ((beg (line-beginning-position))
          (end (line-end-position))
-         (line (buffer-substring-no-properties beg (point))))
-    (when (string-match "\\$" line)
+         (line (buffer-substring-no-properties beg (point)))
+         (re (regexp-quote aya-marker-one-line)))
+    (when (string-match re line)
       (setq line
             (concat
-             (replace-regexp-in-string "\\$" "$1" line)
+             (replace-regexp-in-string re "$1" line)
              "$1"
              (buffer-substring-no-properties (point) end)))
       (delete-region beg end)
