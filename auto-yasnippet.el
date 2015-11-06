@@ -136,7 +136,8 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
            (end (line-end-position))
            (line (buffer-substring-no-properties beg (point)))
            (re (regexp-quote aya-marker-one-line)))
-      (when (string-match re line)
+      (when (and (not (string-match (regexp-quote aya-marker) line))
+                 (string-match re line))
         (setq line
               (concat
                (replace-regexp-in-string re "$1" line)
