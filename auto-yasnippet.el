@@ -100,6 +100,10 @@
   "Directory to save auto yasnippets."
   :type 'directory)
 
+(defcustom aya-create-with-newline nil
+  "If non-nil `aya-create' creates snippet with trailing newline."
+  :type 'boolean)
+
 (defvar aya-current ""
   "Used as snippet body, when `aya-expand' is called.")
 
@@ -122,6 +126,13 @@ But if you set [A-Za-z0-9-_], Foo_bar will expand to $1.")
   "Function to call if no snippet markers were on line / in region.")
 (make-variable-buffer-local 'aya-default-function)
 
+(defun aya--maybe-append-newline (str)
+  "Append newline to STR if `aya-create-with-newline' is non-nil."
+  (if (and aya-create-with-newline
+           (not (string= "\n" (substring str -1))))
+      (concat str "\n")
+    str))
+
 ;;;###autoload
 (defun aya-create-one-line ()
   "A simplistic `aya-create' to create only one mirror.
@@ -139,11 +150,13 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
       (when (and (not (string-match (regexp-quote aya-marker) line))
                  (string-match re line))
         (setq line
-              (concat
-               (replace-regexp-in-string re "$1" line)
-               (if (= (point) end) "" "$1")
-               (buffer-substring-no-properties (point) end)))
+              (aya--maybe-append-newline
+               (concat
+                (replace-regexp-in-string re "$1" line)
+                (if (= (point) end) "" "$1")
+                (buffer-substring-no-properties (point) end))))
         (delete-region beg end)
+        (when aya-create-with-newline (delete-char 1))
         (setq aya-current line)
         (yas-expand-snippet line)))))
 
@@ -193,9 +206,10 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
                  (lambda (x) (if (consp x) (cdr x) x))
                  res ""))
         (setq aya-current
-              (mapconcat
-               (lambda (x) (if (consp x) (format "$%d" (car x)) x))
-               res ""))
+              (aya--maybe-append-newline
+               (mapconcat
+                (lambda (x) (if (consp x) (format "$%d" (car x)) x))
+                res "")))
         ;; try some other useful action if it's defined for current buffer
         (and (functionp aya-default-function)
              (funcall aya-default-function))))))
