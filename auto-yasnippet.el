@@ -214,6 +214,7 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
         (and (functionp aya-default-function)
              (funcall aya-default-function))))))
 
+;;;###autoload
 (defun aya-expand ()
   "Insert the last yasnippet created by `aya-create'."
   (interactive)
