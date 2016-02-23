@@ -272,16 +272,16 @@ In that case expand them.  If there's a snippet expansion in progress,
 move to the next field.  Call `open-line' if nothing else applies."
   (interactive)
   (cond ((expand-abbrev))
-
-        ((yas--snippets-at-point)
+        ((progn
+           (unless yas-global-mode
+             (yas-global-mode 1))
+           (yas--snippets-at-point))
          (yas-next-field-or-maybe-expand))
-
         ((ignore-errors
            (setq aya-invokation-point (point))
            (setq aya-invokation-buffer (current-buffer))
            (setq aya-tab-position (- (point) (line-beginning-position)))
            (yas-expand)))
-
         (t
          (open-line 1))))
 
