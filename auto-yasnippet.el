@@ -218,6 +218,7 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
 (defun aya-expand ()
   "Insert the last yasnippet created by `aya-create'."
   (interactive)
+  (yas-global-mode)
   (if (region-active-p)
       (let ((str (buffer-substring-no-properties
                   (region-beginning)
