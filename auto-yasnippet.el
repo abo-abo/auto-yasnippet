@@ -282,7 +282,8 @@ move to the next field.  Call `open-line' if nothing else applies."
            (setq aya-invokation-point (point))
            (setq aya-invokation-buffer (current-buffer))
            (setq aya-tab-position (- (point) (line-beginning-position)))
-           (yas-expand)))
+           (let ((yas-fallback-behavior 'return-nil))
+             (yas-expand))))
         (t
          (open-line 1))))
 
