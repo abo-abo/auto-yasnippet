@@ -284,6 +284,8 @@ move to the next field.  Call `open-line' if nothing else applies."
            (setq aya-tab-position (- (point) (line-beginning-position)))
            (let ((yas-fallback-behavior 'return-nil))
              (yas-expand))))
+        ((and (fboundp 'tiny-expand)
+              (funcall 'tiny-expand)))
         (t
          (open-line 1))))
 
