@@ -19,6 +19,7 @@ yasnippet fields and mirrors to be.
     - [Multiple placeholders](#multiple-placeholders)
     - [JavaScript - `aya-one-line`:](#javascript---aya-one-line)
     - [Generating comments](#generating-comments)
+    - [Mixed case templates](#mixed-case-templates)
 - [Functions](#functions)
     - [aya-create](#aya-create)
     - [aya-expand](#aya-expand)
@@ -150,6 +151,28 @@ Here's a yasnippet that makes use of `aya-tab-position`. You need to call
 
 Comments generated with this will always end in same column position,
 no matter from which indentation level they were invoked from.
+
+## Mixed case templates
+
+You can create mixed case templates setting `aya-case-fold` to `t`. This will result
+in templates where variables that start with a character of a different case will be
+treated as the same variable. The case of the first character will be preserved in the
+resulting snippet.
+
+Using the earlier example with a slight twist:
+
+```
+count_of_~red = get_total("~Red");
+```
+
+Then calling `aya-create`, then `aya-expand`, and finally typing `blue`, the result
+would be:
+
+```
+count_of_blue = get_total("Blue");
+```
+
+Notice that `blue` was placed in both locations with proper casing.
 
 # Functions
 

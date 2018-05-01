@@ -104,6 +104,10 @@
   "If non-nil `aya-create' creates snippet with trailing newline."
   :type 'boolean)
 
+(defcustom aya-case-fold t
+  "If non-nil `aya-create' creates snippets matching mixed cases."
+  :type 'boolean)
+
 (defvar aya-current ""
   "Used as snippet body, when `aya-expand' is called.")
 
@@ -132,6 +136,45 @@ But \"\\sw\\|\\s_\", Foo_bar will expand to $1.")
            (not (string= "\n" (substring str -1))))
       (concat str "\n")
     str))
+
+(defun aya--alist-create-value-specifier (alist all)
+  "Create yasnippet template specifier for value in ALIST.
+Use ALL to ensure proper template is generated."
+  (if (and aya-case-fold
+           (cdr (assoc 'ucase alist))
+           (aya--matching-lowercase-value-exists alist all))
+      (format "${%d:$(aya--upcase-first-char yas-text)}" (cdr (assoc 'idx alist)))
+    (format "$%d" (cdr (assoc 'idx alist)))))
+
+(defun aya--matching-lowercase-value-exists (alist all)
+  "Verify ALL has lowercase value for idx in ALIST."
+  (cl-some (lambda (other)
+              (and (= (cdr (assoc 'idx alist)) (cdr (assoc 'idx other)))
+                   (not (cdr (assoc 'ucase other)))))
+            (cl-remove-if-not (lambda (x) (listp x)) all)))
+
+(defun aya--alist-get-proper-case-value (alist)
+  "Get value from ALIST with proper case."
+  (if (and aya-case-fold (cdr (assoc 'ucase alist)))
+      (aya--upcase-first-char (cdr (assoc 'value alist)))
+    (cdr (assoc 'value alist))))
+
+(defun aya--upcase-first-char (str)
+  "Set first char in STR to uppercase."
+  (if (not (string= "" str))
+      (concat (upcase (substring str 0 1)) (substring str 1))
+    str))
+
+(defun aya--maybe-downcase-first-char (str)
+  "Set first char in STR to lowercase."
+  (if (and aya-case-fold (not (string= "" str)))
+      (concat (downcase (substring str 0 1)) (substring str 1))
+    str))
+
+(defun aya--first-char-is-upcase (str)
+  "Check if first char in STR is uppercase."
+  (let ((char (string-to-char str)))
+    (= (upcase char) char)))
 
 ;;;###autoload
 (defun aya-create-one-line ()
@@ -174,11 +217,15 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
       (unless (= (match-beginning 0) start)
         (push (substring str start (match-beginning 0)) res))
       (let* ((mirror (match-string 1 str))
-             (idx (gethash mirror mirror-tbl)))
+             (cased-mirror (aya--maybe-downcase-first-char mirror))
+             (idx (gethash cased-mirror mirror-tbl))
+             (ucase (aya--first-char-is-upcase mirror)))
         (unless idx
           (setq idx (cl-incf mirror-idx))
-          (puthash mirror idx mirror-tbl))
-        (push (cons idx mirror) res))
+          (puthash cased-mirror idx mirror-tbl))
+        (push (list (cons 'idx idx)
+                    (cons 'value cased-mirror)
+                    (cons 'ucase ucase)) res))
       (setq start (match-end 0)))
     (unless (= start (length str))
       (push (substring str start) res))
@@ -201,15 +248,15 @@ with words prefixed by `aya-marker' as fields, and mirrors properly set up."
            (str (buffer-substring-no-properties beg end))
            (case-fold-search nil)
            (res (aya--parse str)))
-      (when (cl-some #'consp res)
+      (when (cl-some #'listp res)
         (delete-region beg end)
         (insert (mapconcat
-                 (lambda (x) (if (consp x) (cdr x) x))
+                 (lambda (x) (if (listp x) (aya--alist-get-proper-case-value x) x))
                  res ""))
         (setq aya-current
               (aya--maybe-append-newline
                (mapconcat
-                (lambda (x) (if (consp x) (format "$%d" (car x)) x))
+                (lambda (x) (if (listp x) (aya--alist-create-value-specifier x res) x))
                 res "")))
         ;; try some other useful action if it's defined for current buffer
         (and (functionp aya-default-function)
