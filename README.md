@@ -17,7 +17,7 @@ yasnippet fields and mirrors to be.
     - [A basic example](#a-basic-example)
     - [Inline text](#inline-text)
     - [Multiple placeholders](#multiple-placeholders)
-    - [JavaScript - `aya-one-line`:](#javascript---aya-one-line)
+    - [JavaScript - `aya-create-one-line`:](#javascript---aya-create-one-line)
     - [Generating comments](#generating-comments)
     - [Mixed case templates](#mixed-case-templates)
 - [Functions](#functions)
@@ -117,9 +117,9 @@ select the relevant lines before calling `aya-create`.
 We only fill in three placeholders in this example (the fourth is
 the same as the third).
 
-## JavaScript - `aya-one-line`:
+## JavaScript - `aya-create-one-line`:
 
-`aya-one-line` works as a combination of `aya-create` and `aya-expand`
+`aya-create-one-line` works as a combination of `aya-create` and `aya-expand`
 for one-line snippets. It's invoked by `aya-create` in case
 there's no `aya-marker` (default `~`) on the line, but there's
 `aya-marker-one-line` (default `$`). Or you can invoke it on its own.
