@@ -201,6 +201,7 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
         (delete-region beg end)
         (when aya-create-with-newline (delete-char 1))
         (setq aya-current line)
+        (yas-minor-mode 1)
         (yas-expand-snippet line)))))
 
 (defun aya--parse (str)
