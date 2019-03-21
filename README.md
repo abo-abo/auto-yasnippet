@@ -2,7 +2,7 @@
 
 This is a hybrid of
 [keyboard macros](http://www.gnu.org/software/emacs/manual/html_node/emacs/Basic-Keyboard-Macro.html)
-and [yasnippet](http://code.google.com/p/yasnippet/).  You create the
+and [yasnippet](https://github.com/joaotavora/yasnippet).  You create the
 snippet on the go, usually to be used just in the one place.  It's
 fast, because you're not leaving the current buffer, and all you do is
 enter the code you'd enter anyway, just placing `~` where you'd like
