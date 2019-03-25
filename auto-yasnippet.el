@@ -233,19 +233,21 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
     (nreverse res)))
 
 ;;;###autoload
-(defun aya-create ()
-  "Works on either the current line, or, if `mark-active', the current region.
+(defun aya-create (&optional beg end)
+  "If no options are given, works on either the current line, or, if `mark-active', the current region. Else, works on the region given by BEG and END.
 Removes `aya-marker' prefixes,
 writes the corresponding snippet to `aya-current',
 with words prefixed by `aya-marker' as fields, and mirrors properly set up."
   (interactive)
   (unless (aya-create-one-line)
-    (let* ((beg (if (region-active-p)
-                    (region-beginning)
-                  (line-beginning-position)))
-           (end (if (region-active-p)
-                    (region-end)
-                  (line-end-position)))
+    (let* ((beg (if beg beg
+                  (if (region-active-p)
+                      (region-beginning)
+                    (line-beginning-position))))
+           (end (if end end
+                  (if (region-active-p)
+                      (region-end)
+                    (line-end-position))))
            (str (buffer-substring-no-properties beg end))
            (case-fold-search nil)
            (res (aya--parse str)))
