@@ -3,20 +3,33 @@
 (ert-deftest aya--parse ()
   (should (equal (aya--parse "public void `Foo'TestMethod(`Type' param1, `Type' param2)")
                  '("public void "
-                   (1 . "Foo")
+                   ((idx . 1)
+                    (value . "foo")
+                    (ucase . t))
                    "TestMethod("
-                   (2 . "Type")
+                   ((idx . 2)
+                    (value . "type")
+                    (ucase . t))
                    " param1, "
-                   (2 . "Type")
+                   ((idx . 2)
+                    (value . "type")
+                    (ucase . t))
                    " param2)")))
   (should (equal (aya--parse "public void ~FooTestMethod(`Type' param1, `Type' param2)")
                  '("public void "
-                   (1 . "FooTestMethod")
+                   ((idx . 1)
+                    (value . "fooTestMethod")
+                    (ucase . t))
                    "("
-                   (2 . "Type")
+                   ((idx . 2)
+                    (value . "type")
+                    (ucase . t))
                    " param1, "
-                   (2 . "Type")
+                   ((idx . 2)
+                    (value . "type")
+                    (ucase . t))
                    " param2)"))))
+
 (ert-deftest aya--maybe-append-newline ()
   (should (equal (let ((aya-create-with-newline t))
                    (aya--maybe-append-newline "snippet"))
