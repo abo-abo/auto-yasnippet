@@ -234,10 +234,12 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
 
 ;;;###autoload
 (defun aya-create (&optional beg end)
-  "If no options are given, works on either the current line, or, if `mark-active', the current region. Else, works on the region given by BEG and END.
-Removes `aya-marker' prefixes,
-writes the corresponding snippet to `aya-current',
-with words prefixed by `aya-marker' as fields, and mirrors properly set up."
+  "Create a snippet from the text between BEG and END.
+When the bounds are not given, use either the current region or line.
+
+Remove `aya-marker' prefixes, write the corresponding snippet to
+`aya-current', with words prefixed by `aya-marker' as fields, and
+mirrors properly set up."
   (interactive)
   (unless (aya-create-one-line)
     (let* ((beg (cond (beg)
