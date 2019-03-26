@@ -3,7 +3,7 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/auto-yasnippet
 ;; Version: 0.3
-;; Package-Requires: ((yasnippet "0.8.0"))
+;; Package-Requires: ((yasnippet "0.13.0"))
 
 ;; This file is not part of GNU Emacs
 
@@ -332,14 +332,13 @@ move to the next field.  Call `open-line' if nothing else applies."
         ((progn
            (unless yas-global-mode
              (yas-global-mode 1))
-           (yas--snippets-at-point))
+           (yas-active-snippets))
          (yas-next-field-or-maybe-expand))
         ((ignore-errors
            (setq aya-invokation-point (point))
            (setq aya-invokation-buffer (current-buffer))
            (setq aya-tab-position (- (point) (line-beginning-position)))
-           (let ((yas-fallback-behavior 'return-nil))
-             (yas-expand))))
+           (yas-expand)))
         ((and (fboundp 'tiny-expand)
               (funcall 'tiny-expand)))
         (t
