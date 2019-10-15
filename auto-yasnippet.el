@@ -108,6 +108,10 @@
   "If non-nil `aya-create' creates snippets matching mixed cases."
   :type 'boolean)
 
+(defcustom aya-trim-one-line nil
+  "If non-nil one-line snippets will begin from the first non-space character."
+  :type 'boolean)
+
 (defvar aya-current ""
   "Used as snippet body, when `aya-expand' is called.")
 
@@ -186,7 +190,7 @@ You can use it to quickly generate one-liners such as
 menu.add_item(spamspamspam, \"spamspamspam\")"
   (interactive)
   (when aya-marker-one-line
-    (let* ((beg (line-beginning-position))
+    (let* ((beg (aya--beginning-of-line))
            (end (line-end-position))
            (line (buffer-substring-no-properties beg (point)))
            (re (regexp-quote aya-marker-one-line)))
@@ -232,6 +236,18 @@ menu.add_item(spamspamspam, \"spamspamspam\")"
       (push (substring str start) res))
     (nreverse res)))
 
+(defun aya--beginning-of-line ()
+  "Return the beginning of the line.
+If `aya-trim-one-line' is non-nil return the position of the first
+non-space character.  Otherwise just return the position of the first
+character in the current line."
+  (if aya-trim-one-line
+      (save-excursion
+        (move-beginning-of-line nil)
+        (re-search-forward "[\t ]*")
+        (point))
+    (line-beginning-position)))
+
 ;;;###autoload
 (defun aya-create (&optional beg end)
   "Create a snippet from the text between BEG and END.
@@ -246,7 +262,7 @@ mirrors properly set up."
                       ((region-active-p)
                        (region-beginning))
                       (t
-                       (line-beginning-position))))
+                       (aya--begining-of-line))))
            (end (cond (end)
                       ((region-active-p)
                        (region-end))
