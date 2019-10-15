@@ -262,7 +262,7 @@ mirrors properly set up."
                       ((region-active-p)
                        (region-beginning))
                       (t
-                       (aya--begining-of-line))))
+                       (aya--beginning-of-line))))
            (end (cond (end)
                       ((region-active-p)
                        (region-end))
