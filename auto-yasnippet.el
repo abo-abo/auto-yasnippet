@@ -271,7 +271,7 @@ mirrors properly set up."
            (str (buffer-substring-no-properties beg end))
            (case-fold-search nil)
            (res (aya--parse str)))
-      (when (cl-some #'listp res)
+      (when (listp res)
         (delete-region beg end)
         (insert (mapconcat
                  (lambda (x) (if (listp x) (aya--alist-get-proper-case-value x) x))
