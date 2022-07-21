@@ -1,158 +1,135 @@
-# Auto-YASnippet
 
-This is a hybrid of
-[keyboard macros](http://www.gnu.org/software/emacs/manual/html_node/emacs/Basic-Keyboard-Macro.html)
-and [yasnippet](https://github.com/joaotavora/yasnippet).  You create the
-snippet on the go, usually to be used just in the one place.  It's
-fast, because you're not leaving the current buffer, and all you do is
-enter the code you'd enter anyway, just placing `~` where you'd like
-yasnippet fields and mirrors to be.
+# Auto-YASnippet 1.0.0
 
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-generate-toc again -->
+Auto-YASnippet is a hybrid of [keyboard
+macros](http://www.gnu.org/software/emacs/manual/html_node/emacs/Basic-Keyboard-Macro.html)
+and [YASnippet](https://github.com/joaotavora/yasnippet). You create the snippet
+on the go and it'll be ready to use immediately. Because you're not leaving the
+current buffer the workflow is very fast.
+
+All you do is enter the code you'd enter anyway but placing `~` chars where you`d
+like YASnippet fields and mirrors to be.
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
-- [Auto-YASnippet](#auto-yasnippet)
-- [Installation instructions](#installation-instructions)
-- [Usage](#usage)
-    - [A basic example](#a-basic-example)
-    - [Inline text](#inline-text)
-    - [Multiple placeholders](#multiple-placeholders)
-    - [JavaScript - `aya-create-one-line`:](#javascript---aya-create-one-line)
-    - [Generating comments](#generating-comments)
-    - [Mixed case templates](#mixed-case-templates)
+- [Auto-YASnippet 1.0.0](#auto-yasnippet-100)
+- [Setup/Install](#setupinstall)
+- [Configuration](#configuration)
+- [Examples](#examples)
+  - [Multiple placeholders](#multiple-placeholders)
+  - [Mixed case templates](#mixed-case-templates)
+  - [Expanding around a region](#expanding-around-a-region)
 - [Functions](#functions)
-    - [aya-create](#aya-create)
-    - [aya-expand](#aya-expand)
-    - [aya-open-line](#aya-open-line)
-    - [aya-persist-snippet](#aya-persist-snippet)
+  - [aya-create](#aya-create)
+  - [aya-expand](#aya-expand)
+  - [aya-expand-from-history](#aya-expand-from-history)
+  - [aya-delete-from-history](#aya-delete-from-history)
+  - [aya-next-in-history & aya-previous-in-history](#aya-next-in-history--aya-previous-in-history)
+  - [aya-open-line](#aya-open-line)
+  - [aya-persist-snippet](#aya-persist-snippet)
+  - [aya-persist-snippet-from-history](#aya-persist-snippet-from-history)
 
 <!-- markdown-toc end -->
 
-# Installation instructions
+## Setup/Install
 
 It's easiest/recommended to install from [MELPA](http://melpa.org/).
 Here's a minimal MELPA configuration for your `~/.emacs`:
 
-```cl
+```lisp
 (package-initialize)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 ```
 
-Afterwards, <kbd>M-x package-install RET auto-yasnippet RET</kbd> (you might
-want to <kbd>M-x package-refresh-contents RET</kbd> beforehand if
+Afterwards, <kbd>M-x</kbd> `package-install RET auto-yasnippet` <kbd>RET</kbd> (you might
+want to <kbd>M-x</kbd> `package-refresh-contents` <kbd>RET</kbd> beforehand if
 you haven't done so recently).
 
-You will also want to setup the key bindings. Here's what I recommend:
+## Configuration
 
-```cl
-(global-set-key (kbd "H-w") #'aya-create)
-(global-set-key (kbd "H-y") #'aya-expand)
+In your Emacs init file set keys for the `aya` commands.
+
+For example:
+
+```lisp
+(global-set-key (kbd "C-c C-y w")   #'aya-create)
+(global-set-key (kbd "C-c C-y TAB") #'aya-expand)
+(global-set-key (kbd "C-c C-y SPC") #'aya-expand-from-history)
+(global-set-key (kbd "C-c C-y d")   #'aya-delete-from-history)
+(global-set-key (kbd "C-c C-y c")   #'aya-clear-history)
+(global-set-key (kbd "C-c C-y n")   #'aya-next-in-history)
+(global-set-key (kbd "C-c C-y p")   #'aya-previous-in-history)
+(global-set-key (kbd "C-c C-y s")   #'aya-persist-snippet)
+(global-set-key (kbd "C-c C-y o")   #'aya-open-line)
 ```
 
-I also like to bind this, instead of using <kbd>TAB</kbd> to expand yasnippets:
+## Examples
 
-```cl
-(global-set-key (kbd "C-o") #'aya-open-line)
-```
+If we need to write some repetitive code in an expression:
 
-# Usage
-
-## A basic example
-
-Suppose we want to write:
-
-```js
+```c
 count_of_red = get_total("red");
 count_of_blue = get_total("blue");
 count_of_green = get_total("green");
 ```
 
-We write a template, using ~ to represent variables that we want to
-replace:
+We can write a template, using `~` to represent text we want to replace:
 
-```
+```c
 count_of_~red = get_total("~red");
 ```
 
-Call `aya-create` with point on this line, and the template is
-converted to a value we want:
+With the cursor on this line, or with selected text, call <kbd>M-x</kbd> `aya-create` <kbd>RET</kbd>.
+An auto-snippet is created and the text is converted to remove the `~` marker:
 
-```
+```c
 count_of_red = get_total("red");
 ```
 
-Then call `aya-expand` and you can 'paste' additional instances of
-the template. Yasnippet is active, so you can tab between
-placeholders as usual.
+Now we can call `aya-expand` and we can insert text at each marker in the
+template, note, because both words are the same, we just type it one.
 
-```
-count_of_red = get_total("red");
-count_of_ = get_total("");
-```
+Yasnippet controls all the interaction while expanding so refer to the yasnippet
+docs. Basic interaction is to enter text at a marker and `TAB` to the next one.
 
-## Inline text
-
-`~` replaces the symbol after it. If you want to replace arbitrary
-text, use Emacs-style backticks:
-
-```
-`red'_total = get_total("`red'_values");
+```c
+count_of_[CURSOR] = get_total("");
 ```
 
-## Multiple placeholders
+Say we enter `blue` once at `count_of_`` the result will be.
+
+```c
+count_of_blue = get_total("blue");
+```
+
+###  Multiple placeholders
 
 You can replace multiple values in a template, just like normal
 yasnippet.
 
 In this example, our template has multiple lines, so we need to
-select the relevant lines before calling `aya-create`.
+select the relevant lines before calling `aya-create`
 
-```
+```java
 ~FooType get~Foo() {
     // Get the ~foo attribute on this.
     return this.~foo;
 }
 ```
 
-We only fill in three placeholders in this example (the fourth is
-the same as the third).
+We fill in two placeholders in this example (the 2nd and 4th are the same as
+the 3rd). Yasnippet places us at 1st, entering: Type `TAB` (yasnippet puts
+us at 3rd) entering: bar `TAB` will expand to:
 
-## JavaScript - `aya-create-one-line`:
-
-`aya-create-one-line` works as a combination of `aya-create` and `aya-expand`
-for one-line snippets. It's invoked by `aya-create` in case
-there's no `aya-marker` (default `~`) on the line, but there's
-`aya-marker-one-line` (default `$`). Or you can invoke it on its own.
-
-```js
-field$ = document.getElementById("");
+```java
+Type getBar() {
+  // Get the bar attribute on this.
+  return this.foo;
+}
 ```
 
-call `aya-create` and the rest is as before:
-
-```js
-field1 = document.getElementById("field1");
-field2 = document.getElementById("field2");
-field3 = document.getElementById("field3");
-fieldFinal = document.getElementById("fieldFinal");
-```
-
-## Generating comments
-
-Here's a yasnippet that makes use of `aya-tab-position`. You need to call
-`aya-open-line` if you want to use it.
-
-
-    # -*- mode: snippet -*-
-    # name: short comment
-    # key: sc
-    # --
-    //———$1${1:$(make-string (- 47 aya-tab-position (length yas-text)) ?—)}$0
-
-Comments generated with this will always end in same column position,
-no matter from which indentation level they were invoked from.
-
-## Mixed case templates
+### Mixed case templates
 
 You can create mixed case templates setting `aya-case-fold` to `t`. This will result
 in templates where variables that start with a character of a different case will be
@@ -161,30 +138,70 @@ resulting snippet.
 
 Using the earlier example with a slight twist:
 
-```
+```c
 count_of_~red = get_total("~Red");
 ```
 
 Then calling `aya-create`, then `aya-expand`, and finally typing `blue`, the result
 would be:
 
-```
+```c
 count_of_blue = get_total("Blue");
 ```
 
 Notice that `blue` was placed in both locations with proper casing.
 
+### Expanding around a region
+
+If you create an auto-yasnippet with one field, it's value will be filled in
+from the current region. For example if we create a new snippet:
+
+```swift
+print("\(~thing)")
+```
+
+Select text:
+
+```swift
+myVar + 10
+```
+
+`aya-expand` gives us...
+
+```swift
+print("\(myVar + 10)")
+```
+
+You can also use the YASnippet built in marker `$0` in the point where you
+want to finish expanding the snippet. YASnippet allows `$0` to be the region,
+by setting `yas-wrap-around-region` to `t`.
+
 # Functions
 
 ## aya-create
 
-Removes "~" from current line or region (if mark is active)
-yielding valid code.
-The created snippet is recorded into `aya-current`.
+Removes "~" from current line or region (if mark is active) yielding
+valid code. The created snippet is recorded into `aya-current` and
+appended to `aya-history`.
 
 ## aya-expand
 
 Expands whatever is currently in `aya-current`
+
+## aya-expand-from-history
+
+Select and expand from snippets in `aya-history`. The selected
+snippet will become `aya-current`.
+
+## aya-delete-from-history
+
+Select and delete a snippet from `aya-history`. The next available
+snippet will become `aya-current`. When there are no other snippets
+available `aya-current` will be set to `""`.
+
+## aya-next-in-history & aya-previous-in-history
+
+Set `aya-current` to the next or previous in `aya-history`.
 
 ## aya-open-line
 
@@ -209,3 +226,8 @@ for storing auto-snippets.
 
 You will need to run `yas/reload-all` before using the new snippet
 with its **key** trigger.
+
+## aya-persist-snippet-from-history
+
+Functionally equivalent to `aya-persist-snippet` but using a snippet selected
+from `aya-history`
