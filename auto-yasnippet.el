@@ -5,7 +5,7 @@
 ;;
 ;; Maintainer: Jason Milkins <jasonm23@gmail.com>
 ;;
-;; URL: https://github.com/emacsfodder/auto-yasnippet
+;; URL: https://github.com/abo-abo/auto-yasnippet
 ;; Version: 1.0.0
 ;; Package-Requires: ((yasnippet "0.14.0") (emacs "25.1"))
 ;;
@@ -28,7 +28,7 @@
 ;;
 ;;; Commentary:
 ;;
-;; # Auto-YASnippet
+;; # Auto-YASnippet 1.0.0
 ;;
 ;; Auto-YASnippet is a hybrid of [keyboard
 ;; macros](http://www.gnu.org/software/emacs/manual/html_node/emacs/Basic-Keyboard-Macro.html)
@@ -39,36 +39,13 @@
 ;; All you do is enter the code you'd enter anyway but placing `~' chars where you would
 ;; like YASnippet fields and mirrors to be.
 ;;
-;; <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
-;; **Table of Contents**
-;;
-;; - [Auto-YASnippet](#auto-yasnippet)
-;;     - [Setup/Install](#setupinstall)
-;;         - [Install on Doom Emacs](#install-on-doom-emacs)
-;;     - [Configuration](#configuration)
-;;     - [Examples](#examples)
-;;         - [Multiple placeholders](#multiple-placeholders)
-;;         - [Mixed case templates](#mixed-case-templates)
-;; - [Functions](#functions)
-;;     - [aya-create](#aya-create)
-;;     - [aya-expand](#aya-expand)
-;;     - [aya-expand-from-history](#aya-expand-from-history)
-;;     - [aya-delete-from-history](#aya-delete-from-history)
-;;     - [aya-open-line](#aya-open-line)
-;;     - [aya-persist-snippet](#aya-persist-snippet)
-;;     - [aya-persist-snippet-from-history](#aya-persist-snippet-from-history)
-;;
-;; <!-- markdown-toc end -->
-;;
 ;; ## Setup/Install
 ;;
 ;; It's easiest/recommended to install from [MELPA](http://melpa.org/).
 ;; Here's a minimal MELPA configuration for your `~/.emacs':
 ;;
-;; ```lisp
-;; (package-initialize)
-;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-;; ```
+;;     (package-initialize)
+;;     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 ;;
 ;; Afterwards, <kbd>M-x</kbd> `package-install RET auto-yasnippet' <kbd>RET</kbd> (you might
 ;; want to <kbd>M-x</kbd> `package-refresh-contents' <kbd>RET</kbd> beforehand if
@@ -80,40 +57,32 @@
 ;;
 ;; For example:
 ;;
-;; ```lisp
-;; (global-set-key (kbd "C-c C-y w")   #'aya-create)
-;; (global-set-key (kbd "C-c C-y TAB") #'aya-expand)
-;; (global-set-key (kbd "C-c C-y SPC") #'aya-expand-from-history)
-;; (global-set-key (kbd "C-c C-y d")   #'aya-delete-from-history)
-;; (global-set-key (kbd "C-c C-y c")   #'aya-clear-history)
-;; (global-set-key (kbd "C-c C-y n")   #'aya-next-in-history)
-;; (global-set-key (kbd "C-c C-y p")   #'aya-previous-in-history)
-;; (global-set-key (kbd "C-c C-y s")   #'aya-persist-snippet)
-;; (global-set-key (kbd "C-c C-y o")   #'aya-open-line)
-;; ```
+;;     (global-set-key (kbd "C-c C-y w")   #'aya-create)
+;;     (global-set-key (kbd "C-c C-y TAB") #'aya-expand)
+;;     (global-set-key (kbd "C-c C-y SPC") #'aya-expand-from-history)
+;;     (global-set-key (kbd "C-c C-y d")   #'aya-delete-from-history)
+;;     (global-set-key (kbd "C-c C-y c")   #'aya-clear-history)
+;;     (global-set-key (kbd "C-c C-y n")   #'aya-next-in-history)
+;;     (global-set-key (kbd "C-c C-y p")   #'aya-previous-in-history)
+;;     (global-set-key (kbd "C-c C-y s")   #'aya-persist-snippet)
+;;     (global-set-key (kbd "C-c C-y o")   #'aya-open-line)
 ;;
 ;; ## Examples
 ;;
 ;; If we need to write some repetitive code in an expression:
 ;;
-;; ```c
-;; count_of_red = get_total("red");
-;; count_of_blue = get_total("blue");
-;; count_of_green = get_total("green");
-;; ```
+;;     count_of_red = get_total("red");
+;;     count_of_blue = get_total("blue");
+;;     count_of_green = get_total("green");
 ;;
 ;; We can write a template, using `~' to represent text we want to replace:
 ;;
-;; ```c
-;; count_of_~red = get_total("~red");
-;; ```
+;;     count_of_~red = get_total("~red");
 ;;
 ;; With the cursor on this line, or with selected text, call <kbd>M-x</kbd> `aya-create' <kbd>RET</kbd>.
 ;; An auto-snippet is created and the text is converted to remove the `~' marker:
 ;;
-;; ```c
-;; count_of_red = get_total("red");
-;; ```
+;;     count_of_red = get_total("red");
 ;;
 ;; Now we can call `aya-expand' and we can insert text at each marker in the
 ;; template, note, because both words are the same, we just type it one.
@@ -121,15 +90,11 @@
 ;; Yasnippet controls all the interaction while expanding so refer to the yasnippet
 ;; docs. Basic interaction is to enter text at a marker and `TAB' to the next one.
 ;;
-;; ```c
-;; count_of_[CURSOR] = get_total("");
-;; ```
+;;     count_of_[CURSOR] = get_total("");
 ;;
-;; Say we enter `blue' once at `count_of_' the result will be.
+;; Say we enter `blue' once at `count_of_'` the result will be.
 ;;
-;; ```c
-;; count_of_blue = get_total("blue");
-;; ```
+;;     count_of_blue = get_total("blue");
 ;;
 ;; ###  Multiple placeholders
 ;;
@@ -139,23 +104,19 @@
 ;; In this example, our template has multiple lines, so we need to
 ;; select the relevant lines before calling `aya-create'
 ;;
-;; ```java
-;; ~FooType get~Foo() {
-;;     // Get the ~foo attribute on this.
-;;     return this.~foo;
-;; }
-;; ```
+;;     ~FooType get~Foo() {
+;;         // Get the ~foo attribute on this.
+;;         return this.~foo;
+;;     }
 ;;
 ;; We fill in two placeholders in this example (the 2nd and 4th are the same as
 ;; the 3rd). Yasnippet places us at 1st, entering: Type `TAB' (yasnippet puts
 ;; us at 3rd) entering: bar `TAB' will expand to:
 ;;
-;; ```java
-;; Type getBar() {
-;;   // Get the bar attribute on this.
-;;   return this.foo;
-;; }
-;; ```
+;;     Type getBar() {
+;;       // Get the bar attribute on this.
+;;       return this.foo;
+;;     }
 ;;
 ;; ### Mixed case templates
 ;;
@@ -166,16 +127,12 @@
 ;;
 ;; Using the earlier example with a slight twist:
 ;;
-;; ```c
-;; count_of_~red = get_total("~Red");
-;; ```
+;;     count_of_~red = get_total("~Red");
 ;;
 ;; Then calling `aya-create', then `aya-expand', and finally typing `blue', the result
 ;; would be:
 ;;
-;; ```c
-;; count_of_blue = get_total("Blue");
-;; ```
+;;     count_of_blue = get_total("Blue");
 ;;
 ;; Notice that `blue' was placed in both locations with proper casing.
 ;;
@@ -184,23 +141,17 @@
 ;; If you create an auto-yasnippet with one field, it's value will be filled in
 ;; from the current region. For example if we create a new snippet:
 ;;
-;; ```swift
-;; print("\(~thing)")
-;; ```
+;;     print("\(~thing)")
 ;;
 ;; Select text:
 ;;
-;; ```swift
-;; myVar + 10
-;; ```
+;;     myVar + 10
 ;;
 ;; `aya-expand' gives us...
 ;;
-;; ```swift
-;; print("\(myVar + 10)")
-;; ```
+;;     print("\(myVar + 10)")
 ;;
-;; You can also use the YASnippet built in marker `$0` in the point where you
+;; You can also use the YASnippet built in marker `$0' in the point where you
 ;; want to finish expanding the snippet. YASnippet allows `$0' to be the region,
 ;; by setting `yas-wrap-around-region' to `t'.
 ;;
