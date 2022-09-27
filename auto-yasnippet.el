@@ -407,6 +407,34 @@ mirrors properly set up."
       snippet-with-region-exit-point))
 
 ;;;###autoload
+(defun aya-create-one-line ()
+  "A simplistic `aya-create' to create only one mirror.
+You can still have as many instances of this mirror as you want.
+It's less flexible than `aya-create', but faster.
+It uses a different marker, which is `aya-marker-one-line'.
+You can use it to quickly generate one-liners such as
+menu.add_item(spamspamspam, \"spamspamspam\")"
+  (interactive)
+  (when aya-marker-one-line
+    (let* ((beg (aya--beginning-of-line))
+           (end (line-end-position))
+           (line (buffer-substring-no-properties beg (point)))
+           (re (regexp-quote aya-marker-one-line)))
+        (when (and (not (string-match (regexp-quote aya-marker) line))
+                   (string-match re line))
+          (setq line
+                (aya--maybe-append-newline
+                  (concat
+                   (replace-regexp-in-string re "$1" line)
+                   (if (= (point) end) "" "$1")
+                   (buffer-substring-no-properties (point) end))))
+          (delete-region beg end)
+          (when aya-create-with-newline (delete-char 1))
+          (setq aya-current line)
+          (yas-minor-mode 1)
+          (yas-expand-snippet line)))))
+
+;;;###autoload
 (defun aya-expand (&optional prefix)
   "Insert the last yasnippet created by `aya-create'.
 
