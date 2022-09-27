@@ -1,3 +1,4 @@
+[![Auto-YASnippet Tests](https://github.com/abo-abo/auto-yasnippet/actions/workflows/test.yml/badge.svg)](https://github.com/abo-abo/auto-yasnippet/actions/workflows/test.yml)
 
 # Auto-YASnippet 1.0.0
 
