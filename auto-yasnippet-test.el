@@ -79,7 +79,7 @@
           (input "new current $1"))
       (aya--set-current input)
       (should (equal aya-current input))
-      (should (equal (first aya-history) input))))
+      (should (equal (car aya-history) input))))
 
 (ert-deftest test-aya-next-in-history ()
     (let ((aya-history '("Zero $1" "One $1" "Two $1"))
