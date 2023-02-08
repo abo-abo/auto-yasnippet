@@ -496,8 +496,8 @@ and will be used for consecutive `aya-expand' commands.
 When PREFIX is given, the corresponding field number is
 modified to make it the current point after expansion."
   (interactive "p")
-  (unless (> (length aya-history)
-             (user-error "Nothing in aya-history to expand")))
+  (unless (> (length aya-history) 0)
+             (user-error "Nothing in aya-history to expand"))
   (setq aya-current (completing-read "Select aya-snippet: " aya-history))
   (aya-expand prefix))
 
